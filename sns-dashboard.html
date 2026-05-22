@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>송선미님 SNS 원소스멀티유즈 운영대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --canvas: #ffffff;
+    --surface: #f7f6f3;
+    --surface-soft: #fafaf8;
+    --hero-dark: #191919;
+    --primary: #5B36B2;
+    --primary-light: #7c5cc7;
+    --ink: #37352f;
+    --charcoal: #37352f;
+    --slate: #787774;
+    --steel: #9b9a97;
+    --stone: #b4b4b0;
+    --muted: #c7c6c4;
+    --hairline: #e9e9e7;
+    --hairline-soft: #f1f1ef;
+    --hairline-strong: #d3d3d0;
+    --on-dark: #ffffff;
+    --on-dark-muted: rgba(255,255,255,0.7);
+    --link-blue: #2383e2;
+    --brand-pink: #e255a1;
+    --brand-orange: #d9730d;
+    --brand-teal: #0f7b6c;
+    --brand-green: #0f7b6c;
+    --brand-yellow: #dfab01;
+    --tint-peach: #fdecc8;
+    --tint-rose: #f5e0e9;
+    --tint-mint: #dbeddb;
+    --tint-lavender: #e8deee;
+    --tint-sky: #d3e5ef;
+    --tint-yellow: #fdecc8;
+    --tint-cream: #faf3dd;
+    --tint-gray: #ebeced;
+    --success: #0f7b6c;
+    --warning: #d9730d;
+    --error: #e03e3e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
+    color: var(--ink);
+    background: var(--surface);
+    line-height: 1.55;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar {
+    width: 260px;
+    background: var(--canvas);
+    border-right: 1px solid var(--hairline);
+    padding: 28px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 10;
+  }
+
+  .sidebar h1 {
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.40;
+    padding: 0 20px 16px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .sidebar nav a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 20px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.50;
+    color: var(--slate);
+    text-decoration: none;
+    transition: all .15s ease;
+    border-radius: 6px;
+    margin: 2px 8px;
+  }
+
+  .sidebar nav a .nav-icon { font-size: 16px; }
+
+  .sidebar nav a:hover {
+    color: var(--ink);
+    background: var(--surface);
+  }
+
+  .sidebar nav a.active {
+    color: var(--primary);
+    background: var(--tint-lavender);
+    font-weight: 500;
+  }
+
+  .sidebar .controls {
+    padding: 16px 20px;
+    border-top: 1px solid var(--hairline);
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sidebar .controls button {
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.30;
+    border: 1px solid var(--hairline-strong);
+    background: var(--canvas);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--ink);
+    transition: background .15s ease;
+    font-family: inherit;
+  }
+
+  .sidebar .controls button:hover { background: var(--surface); }
+
+  .sidebar .controls button:last-child {
+    background: var(--primary);
+    color: var(--on-dark);
+    border-color: var(--primary);
+  }
+
+  .sidebar .controls button:last-child:hover { opacity: 0.9; }
+
+  /* Main */
+  .main {
+    margin-left: 260px;
+    flex: 1;
+    padding: 40px 48px;
+    max-width: 1100px;
+    background: var(--canvas);
+    min-height: 100vh;
+  }
+
+  /* Hero */
+  .page-hero {
+    background: linear-gradient(135deg, #5B36B2 0%, #7c5cc7 50%, #9b7fd4 100%);
+    border-radius: 16px;
+    padding: 40px 36px;
+    margin-bottom: 36px;
+    color: var(--on-dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-hero::after {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+
+  .page-hero .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.20;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .page-hero .sub {
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+    font-weight: 400;
+  }
+
+  /* Section */
+  .section { margin-bottom: 48px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--hairline);
+  }
+
+  .section-header .sec-icon {
+    font-size: 28px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .section-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+  }
+
+  .section-header .sec-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    margin-left: auto;
+  }
+
+  /* KPI / Stat Widgets */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .kpi-card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: rgba(15,15,15,0.06) 0 2px 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: rgba(15,15,15,0.12) 0 6px 20px;
+  }
+
+  .kpi-card .kpi-icon { font-size: 36px; margin-bottom: 8px; }
+
+  .kpi-card .kpi-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .kpi-card .kpi-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--slate);
+    line-height: 1.3;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 14px 0;
+    box-shadow: rgba(15,15,15,0.06) 0 2px 8px;
+    transition: box-shadow 0.2s;
+  }
+
+  .card:hover { box-shadow: rgba(15,15,15,0.10) 0 4px 16px; }
+
+  .card-icon { font-size: 48px; margin-bottom: 12px; display: block; }
+  .card-icon-sm { font-size: 32px; margin-bottom: 8px; display: block; }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .card-red {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+    border-color: rgba(224,62,62,0.2);
+  }
+
+  .card-green {
+    background: linear-gradient(135deg, #f0faf0 0%, #dbeddb 100%);
+    border-color: rgba(15,123,108,0.2);
+  }
+
+  .card-purple {
+    background: linear-gradient(135deg, #f5f0ff 0%, #e8deee 100%);
+    border-color: rgba(91,54,178,0.2);
+  }
+
+  .card-orange {
+    background: linear-gradient(135deg, #fffaf0 0%, #fdecc8 100%);
+    border-color: rgba(217,115,13,0.2);
+  }
+
+  .card-sky {
+    background: linear-gradient(135deg, #f0f8ff 0%, #d3e5ef 100%);
+    border-color: rgba(35,131,226,0.2);
+  }
+
+  .card-rose {
+    background: linear-gradient(135deg, #fff5f9 0%, #f5e0e9 100%);
+    border-color: rgba(226,85,161,0.2);
+  }
+
+  /* Grids */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 14px 0;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 14px 0;
+  }
+
+  .grid-2 > .card, .grid-3 > .card { margin: 0; }
+
+  /* Flow Diagram */
+  .flow-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 20px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .flow-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 24px;
+    background: var(--canvas);
+    border: 2px solid var(--primary);
+    border-radius: 14px;
+    min-width: 100px;
+    text-align: center;
+    box-shadow: rgba(91,54,178,0.12) 0 3px 10px;
+    position: relative;
+  }
+
+  .flow-step .flow-icon { font-size: 32px; }
+
+  .flow-step .flow-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .flow-step .flow-sub {
+    font-size: 11px;
+    color: var(--slate);
+    font-weight: 400;
+  }
+
+  .flow-arrow {
+    font-size: 28px;
+    color: var(--primary);
+    padding: 0 6px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding: 20px 0;
+    margin: 20px 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--link-blue), var(--brand-yellow), var(--primary));
+    border-radius: 3px;
+  }
+
+  .timeline-item {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+    position: relative;
+    align-items: flex-start;
+  }
+
+  .timeline-dot {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    z-index: 1;
+    border: 3px solid var(--canvas);
+    box-shadow: rgba(15,15,15,0.10) 0 2px 8px;
+  }
+
+  .timeline-dot-blue { background: var(--tint-sky); }
+  .timeline-dot-yellow { background: var(--tint-yellow); }
+  .timeline-dot-purple { background: var(--tint-lavender); }
+
+  .timeline-content {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 18px 22px;
+    flex: 1;
+    box-shadow: rgba(15,15,15,0.04) 0 2px 6px;
+  }
+
+  .timeline-content .tl-period {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .timeline-content .tl-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  .timeline-content .tl-desc {
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.5;
+  }
+
+  /* Ratio bars - bigger */
+  .ratio-section { margin: 20px 0; }
+
+  .ratio-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .ratio-label-row .ratio-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .ratio-label-row .ratio-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    background: var(--tint-lavender);
+    color: var(--primary);
+  }
+
+  .ratio-bar {
+    display: flex;
+    height: 48px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 0 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .ratio-bar > div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--on-dark);
+    transition: opacity .15s;
+    gap: 4px;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .ratio-bar > div:hover { opacity: 0.85; }
+
+  .ratio-bar .bar-label { font-size: 10px; font-weight: 400; opacity: 0.85; }
+
+  .ratio-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 13px;
+    margin-top: 4px;
+    color: var(--slate);
+  }
+
+  .ratio-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .ratio-legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* Comparison Cards */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 14px 0;
+  }
+
+  .compare-card {
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid;
+    box-shadow: rgba(15,15,15,0.06) 0 2px 8px;
+  }
+
+  .compare-card.compare-good {
+    background: linear-gradient(135deg, #f0faf0 0%, #dbeddb 100%);
+    border-color: rgba(15,123,108,0.25);
+  }
+
+  .compare-card.compare-bad {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+    border-color: rgba(224,62,62,0.25);
+  }
+
+  .compare-card .compare-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .compare-card .compare-header .c-icon { font-size: 28px; }
+
+  .compare-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .compare-card li {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+  }
+
+  .compare-card li:last-child { border-bottom: none; }
+
+  .compare-card li .item-icon { font-size: 16px; flex-shrink: 0; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-ok { background: var(--tint-mint); color: var(--success); }
+  .badge-ban { background: #fdebec; color: var(--error); }
+  .badge-info { background: var(--tint-sky); color: var(--link-blue); }
+  .badge-purple { background: var(--tint-lavender); color: var(--primary); }
+  .badge-orange { background: var(--tint-peach); color: var(--warning); }
+
+  /* Tags */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 8px;
+    margin-right: 6px;
+    margin-bottom: 6px;
+  }
+
+  .tag-filming { background: var(--tint-sky); color: #1a6db5; }
+  .tag-editing { background: var(--tint-peach); color: #b5751a; }
+  .tag-planning { background: var(--tint-lavender); color: var(--primary); }
+
+  /* Checklist */
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    background: var(--surface-soft);
+    border: 1px solid var(--hairline-soft);
+    transition: background 0.15s;
+    font-size: 15px;
+  }
+
+  .checklist li:hover { background: var(--surface); }
+
+  .checklist li .check-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Big Quote Card */
+  .quote-card {
+    background: linear-gradient(135deg, #f0faf0 0%, #dbeddb 100%);
+    border: 2px solid rgba(15,123,108,0.2);
+    border-radius: 16px;
+    padding: 32px 36px;
+    margin: 20px 0;
+    text-align: center;
+    position: relative;
+  }
+
+  .quote-card .quote-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .quote-card .quote-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .quote-card .quote-sub {
+    font-size: 14px;
+    color: var(--brand-teal);
+    font-weight: 500;
+  }
+
+  /* Warning Banner */
+  .warning-banner {
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+    border: 2px solid rgba(224,62,62,0.3);
+    border-radius: 14px;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  .warning-banner .wb-icon { font-size: 40px; flex-shrink: 0; }
+
+  .warning-banner .wb-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--error);
+    line-height: 1.4;
+  }
+
+  /* Capacity / Skill bar */
+  .skill-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--surface-soft);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--hairline-soft);
+  }
+
+  .skill-row .skill-icon { font-size: 28px; }
+
+  .skill-row .skill-name {
+    font-size: 15px;
+    font-weight: 600;
+    min-width: 90px;
+    color: var(--ink);
+  }
+
+  .skill-row .skill-bar-wrap {
+    flex: 1;
+    height: 12px;
+    background: var(--hairline);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .skill-row .skill-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease;
+  }
+
+  /* Output table grid */
+  .output-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .output-item {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 18px 14px;
+    text-align: center;
+    box-shadow: rgba(15,15,15,0.04) 0 2px 6px;
+    transition: transform 0.2s;
+  }
+
+  .output-item:hover { transform: translateY(-2px); }
+
+  .output-item .out-icon { font-size: 32px; margin-bottom: 6px; display: block; }
+
+  .output-item .out-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 2px;
+  }
+
+  .output-item .out-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--slate);
+  }
+
+  /* Platform comparison big cards */
+  .platform-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 16px 0;
+  }
+
+  .platform-card {
+    border-radius: 16px;
+    padding: 28px;
+    border: 2px solid;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .platform-card::after {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    opacity: 0.06;
+  }
+
+  .platform-card.yt {
+    background: linear-gradient(135deg, #fff0f0 0%, #ffe8e8 100%);
+    border-color: rgba(224,62,62,0.2);
+  }
+
+  .platform-card.yt::after { background: #e03e3e; }
+
+  .platform-card.ig {
+    background: linear-gradient(135deg, #f5f0ff 0%, #e8deee 100%);
+    border-color: rgba(91,54,178,0.2);
+  }
+
+  .platform-card.ig::after { background: var(--primary); }
+
+  .platform-card .pf-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+
+  .platform-card .pf-icon { font-size: 40px; }
+
+  .platform-card .pf-title { font-size: 20px; font-weight: 700; }
+
+  .platform-card .pf-tags { margin-bottom: 12px; }
+
+  .platform-card .pf-desc {
+    font-size: 14px;
+    color: var(--slate);
+    line-height: 1.6;
+  }
+
+  .platform-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .platform-card li {
+    padding: 6px 0;
+    font-size: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .platform-card li .li-icon { flex-shrink: 0; }
+
+  /* Thumbnail rules grid */
+  .thumb-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .thumb-item {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    padding: 20px 16px;
+    text-align: center;
+    box-shadow: rgba(15,15,15,0.04) 0 2px 6px;
+  }
+
+  .thumb-item .th-icon { font-size: 36px; margin-bottom: 8px; display: block; }
+
+  .thumb-item .th-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .thumb-item .th-desc {
+    font-size: 12px;
+    color: var(--slate);
+    line-height: 1.4;
+  }
+
+  /* Ad rules */
+  .ad-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin: 16px 0;
+  }
+
+  .ad-item {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 14px;
+    padding: 22px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    box-shadow: rgba(15,15,15,0.04) 0 2px 6px;
+  }
+
+  .ad-item .ad-icon { font-size: 36px; flex-shrink: 0; }
+
+  .ad-item .ad-text .ad-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: var(--ink);
+  }
+
+  .ad-item .ad-text .ad-desc {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.5;
+  }
+
+  /* Collapsible */
+  .collapsible {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--surface-soft);
+    border-radius: 10px;
+    margin: 16px 0 8px;
+    border: 1px solid var(--hairline-soft);
+    transition: background 0.15s;
+  }
+
+  .collapsible:hover { background: var(--surface); }
+
+  .collapsible::before {
+    content: '▸';
+    font-size: 12px;
+    color: var(--slate);
+    transition: transform .15s ease;
+    display: inline-block;
+    width: 16px;
+    flex-shrink: 0;
+  }
+
+  .collapsible.open::before { content: '▾'; }
+
+  .collapsible-content { display: none; }
+  .collapsible-content.show { display: block; }
+
+  /* Stamp */
+  .stamp {
+    font-size: 13px;
+    color: var(--steel);
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--hairline);
+    font-weight: 400;
+    line-height: 1.40;
+    text-align: center;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--hairline);
+    margin: 40px 0;
+  }
+
+  .highlight {
+    background: var(--tint-yellow);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  /* Problem list */
+  .problem-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .problem-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #fff8f0 0%, #fdecc8 100%);
+    border: 1px solid rgba(217,115,13,0.15);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .problem-list li .p-icon { font-size: 20px; flex-shrink: 0; }
+
+  /* Scrollbar */
+  .sidebar::-webkit-scrollbar { width: 6px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--hairline-strong); border-radius: 3px; }
+  .sidebar::-webkit-scrollbar-thumb:hover { background: var(--stone); }
+
+  ::selection { background: var(--tint-lavender); color: var(--ink); }
+
+  /* Print */
+  @media print {
+    .sidebar, .controls, .no-print { display: none !important; }
+    .main { margin-left: 0; padding: 24px; max-width: 100%; }
+    .collapsible-content { display: block !important; }
+    .section { page-break-inside: avoid; }
+    body { font-size: 13px; background: #fff; }
+    .page-hero { background: var(--primary) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  /* Mobile */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 24px 16px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-2, .compare-grid, .platform-grid, .ad-grid { grid-template-columns: 1fr; }
+    .grid-3, .thumb-grid { grid-template-columns: 1fr 1fr; }
+    .output-grid { grid-template-columns: repeat(3, 1fr); }
+    .flow-horizontal { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+    .page-hero .page-title { font-size: 24px; }
+    .section-header h2 { font-size: 20px; }
+    .mobile-menu {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      background: var(--primary);
+      color: var(--on-dark);
+      border: none;
+      border-radius: 14px;
+      width: 52px;
+      height: 52px;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: rgba(91,54,178,0.35) 0 8px 24px;
+    }
+  }
+
+  .mobile-menu { display: none; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <h1>📋 SNS 운영대시보드</h1>
+  <nav>
+    <a href="#principle"><span class="nav-icon">🎯</span> 핵심 원칙</a>
+    <a href="#youtube"><span class="nav-icon">🎬</span> 유튜브 방향</a>
+    <a href="#instagram"><span class="nav-icon">📱</span> 인스타그램 방향</a>
+    <a href="#thumbnail"><span class="nav-icon">🎨</span> 썸네일 규칙</a>
+    <a href="#ad"><span class="nav-icon">💰</span> 광고/PPL 규칙</a>
+    <a href="#ratio"><span class="nav-icon">📊</span> 콘텐츠 비율</a>
+    <a href="#storyline"><span class="nav-icon">📖</span> 스토리라인 전략</a>
+    <a href="#filming"><span class="nav-icon">📸</span> 촬영 루틴</a>
+    <a href="#shortform"><span class="nav-icon">✂️</span> 숏폼 제작</a>
+    <a href="#staff"><span class="nav-icon">👥</span> 담당자 코칭</a>
+    <a href="#expression"><span class="nav-icon">💬</span> 표현 가이드</a>
+  </nav>
+  <div class="controls">
+    <button onclick="toggleAll(true)">📂 모두 펼치기</button>
+    <button onclick="toggleAll(false)">📁 모두 접기</button>
+    <button onclick="window.print()">🖨️ PDF 출력</button>
+  </div>
+</aside>
+
+<!-- Main -->
+<main class="main">
+
+<!-- Hero -->
+<div class="page-hero">
+  <div class="page-title">송선미님 SNS 원소스멀티유즈 운영대시보드</div>
+  <p class="sub">미팅 반영 최종본 · 2025년 5월 기준</p>
+</div>
+
+<!-- KPI Stats -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <span class="kpi-icon">📸</span>
+    <div class="kpi-value">2주 1회</div>
+    <div class="kpi-label">촬영 주기</div>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-icon">✂️</span>
+    <div class="kpi-value">2~3개</div>
+    <div class="kpi-label">숏폼 / 롱폼당</div>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-icon">⏱️</span>
+    <div class="kpi-value">최대 2분</div>
+    <div class="kpi-label">광고 삽입 시간</div>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-icon">🔤</span>
+    <div class="kpi-value">2종</div>
+    <div class="kpi-label">썸네일 폰트 제한</div>
+  </div>
+</div>
+
+<!-- ======================== 핵심 원칙 ======================== -->
+<section class="section" id="principle">
+  <div class="section-header">
+    <div class="sec-icon">🎯</div>
+    <h2>핵심 원칙</h2>
+    <span class="sec-badge" style="background: var(--tint-mint); color: var(--success);">CORE</span>
+  </div>
+
+  <!-- Quote -->
+  <div class="quote-card">
+    <span class="quote-icon">💚</span>
+    <div class="quote-text">사람이 먼저, 브랜드는 나중.<br>삶과 루틴 속에서 BIOFOX 천방케어가 경험으로 등장.</div>
+    <div class="quote-sub">— 운영의 핵심 철학</div>
+  </div>
+
+  <!-- Warning -->
+  <div class="warning-banner">
+    <span class="wb-icon">🚫</span>
+    <div class="wb-text">청담엑스날 전면 금지. 레아쥬 PPL 수준으로만.</div>
+  </div>
+
+  <!-- 원소스멀티유즈 Flow -->
+  <h3 style="font-size:18px; font-weight:700; margin: 28px 0 12px; color: var(--ink);">⚡ 원소스멀티유즈 구조</h3>
+
+  <div class="flow-horizontal">
+    <div class="flow-step" style="border-color: var(--link-blue);">
+      <span class="flow-icon">💡</span>
+      <span class="flow-label">1개 토픽</span>
+      <span class="flow-sub">주제 선정</span>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" style="border-color: #e03e3e;">
+      <span class="flow-icon">🎬</span>
+      <span class="flow-label">유튜브</span>
+      <span class="flow-sub">날것 · 언니톤</span>
+    </div>
+    <span class="flow-arrow">+</span>
+    <div class="flow-step" style="border-color: var(--primary);">
+      <span class="flow-icon">📱</span>
+      <span class="flow-label">인스타그램</span>
+      <span class="flow-sub">세련 · 배우톤</span>
+    </div>
+  </div>
+
+  <div class="card card-sky" style="text-align:center; margin-top: 8px;">
+    <strong>같은 주제, 다른 톤.</strong> 유튜브와 인스타를 분리 운영하지 않는다.
+  </div>
+
+  <!-- Problems -->
+  <h3 style="font-size:18px; font-weight:700; margin: 28px 0 12px; color: var(--ink);">⚠️ 현재 문제점</h3>
+  <ul class="problem-list">
+    <li><span class="p-icon">🔸</span> 주제가 산발적 — 카테고리 로테이션 없음</li>
+    <li><span class="p-icon">🔸</span> 썸네일 일관성 없음</li>
+    <li><span class="p-icon">🔸</span> 유튜브·인스타가 완전히 따로 운영됨</li>
+  </ul>
+</section>
+
+<!-- ======================== 유튜브 + 인스타 비교 ======================== -->
+<section class="section" id="youtube">
+  <div class="section-header">
+    <div class="sec-icon">🎬</div>
+    <h2>유튜브 방향</h2>
+    <span class="sec-badge" style="background: #fdebec; color: var(--error);">YOUTUBE</span>
+  </div>
+
+  <div class="platform-grid">
+    <div class="platform-card yt">
+      <div class="pf-header">
+        <span class="pf-icon">🎬</span>
+        <span class="pf-title">유튜브</span>
+      </div>
+      <div class="pf-tags">
+        <span class="tag" style="background:#fdebec; color:var(--error);">날것(raw)</span>
+        <span class="tag" style="background:#fdecc8; color:#b5751a;">텐션(energy)</span>
+        <span class="tag" style="background:#f5e0e9; color:#c44a8a;">예능형</span>
+      </div>
+      <p class="pf-desc" style="margin-bottom:12px;">옆집 언니 바이브 — 과감하고, 직설적이고, 주관 뚜렷한</p>
+      <ul>
+        <li><span class="li-icon">💪</span> 운동, 뷰티, 일상 등 카테고리 로테이션</li>
+        <li><span class="li-icon">📅</span> 각 카테고리 최소 월 1회 등장</li>
+        <li><span class="li-icon">🎤</span> 대화가 자연스럽게 흘러가도록</li>
+      </ul>
+    </div>
+    <div class="platform-card ig">
+      <div class="pf-header">
+        <span class="pf-icon">📱</span>
+        <span class="pf-title">인스타그램</span>
+      </div>
+      <div class="pf-tags">
+        <span class="tag" style="background:var(--tint-lavender); color:var(--primary);">세련된</span>
+        <span class="tag" style="background:var(--tint-sky); color:#1a6db5;">배우 이미지</span>
+        <span class="tag" style="background:var(--tint-rose); color:#c44a8a;">우아함</span>
+      </div>
+      <p class="pf-desc" style="margin-bottom:12px;"><strong>인플루언서가 아니라 배우다.</strong> 세련된 배우 이미지 유지.</p>
+      <ul>
+        <li><span class="li-icon">📷</span> 촬영 스케치, 외출룩</li>
+        <li><span class="li-icon">✨</span> 우아하고 세련된 사진</li>
+        <li><span class="li-icon">🚫</span> 인플루언서식 콘텐츠 금지</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 촬영 규칙 cards -->
+  <h3 style="font-size:18px; font-weight:700; margin: 28px 0 12px; color: var(--ink);">🎥 유튜브 촬영 규칙</h3>
+  <div class="grid-3">
+    <div class="card card-sky">
+      <span class="card-icon-sm">📝</span>
+      <div class="card-title">대본 없음</div>
+      <p style="font-size:13px; color:var(--slate);">준비물은 딱 2개: ① 토픽 제목 ② 질문 리스트</p>
+    </div>
+    <div class="card card-orange">
+      <span class="card-icon-sm">🎬</span>
+      <div class="card-title">날것으로 촬영</div>
+      <p style="font-size:13px; color:var(--slate);">문제는 편집에서 잘라낸다. 현장은 자유롭게.</p>
+    </div>
+    <div class="card card-rose">
+      <span class="card-icon-sm">⚡</span>
+      <div class="card-title">에너지 관리</div>
+      <p style="font-size:13px; color:var(--slate);"><span class="highlight">담당자가 긴장하면 에너지가 떨어진다</span></p>
+    </div>
+  </div>
+
+  <!-- 롱폼→숏폼 flow -->
+  <h3 style="font-size:18px; font-weight:700; margin: 28px 0 12px; color: var(--ink);">🔄 필수: 롱폼 → 숏폼 추출</h3>
+  <div class="flow-horizontal">
+    <div class="flow-step">
+      <span class="flow-icon">🎬</span>
+      <span class="flow-label">롱폼</span>
+      <span class="flow-sub">촬영 완료</span>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">
+      <span class="flow-icon">✂️</span>
+      <span class="flow-label">숏폼 추출</span>
+      <span class="flow-sub">2~3개</span>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">
+      <span class="flow-icon">🎞️</span>
+      <span class="flow-label">릴스</span>
+      <span class="flow-sub">인스타 발행</span>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step">
+      <span class="flow-icon">📸</span>
+      <span class="flow-label">카루셀</span>
+      <span class="flow-sub">이미지 발행</span>
+    </div>
+  </div>
+  <div class="card card-orange" style="text-align:center;">
+    모든 롱폼에서 반드시 <strong>2~3개 숏폼</strong> 추출. AI 도구로 흥미로운 구간을 자동 식별 → 담당자가 다듬기.
+  </div>
+</section>
+
+<!-- ======================== 인스타 ======================== -->
+<section class="section" id="instagram">
+  <div class="section-header">
+    <div class="sec-icon">📱</div>
+    <h2>인스타그램 방향</h2>
+    <span class="sec-badge" style="background: var(--tint-lavender); color: var(--primary);">INSTAGRAM</span>
+  </div>
+
+  <h3 class="collapsible open" onclick="toggle(this)" style="font-size:16px; font-weight:700;">올려야 할 것 vs 올리지 말 것</h3>
+  <div class="collapsible-content show">
+    <div class="compare-grid">
+      <div class="compare-card compare-good">
+        <div class="compare-header">
+          <span class="c-icon">✅</span> 올려야 할 것
+        </div>
+        <ul>
+          <li><span class="item-icon">🟢</span> 촬영 스케치</li>
+          <li><span class="item-icon">🟢</span> 외출룩</li>
+          <li><span class="item-icon">🟢</span> 우아하고 세련된 사진</li>
+        </ul>
+      </div>
+      <div class="compare-card compare-bad">
+        <div class="compare-header">
+          <span class="c-icon">❌</span> 올리지 말 것
+        </div>
+        <ul>
+          <li><span class="item-icon">🔴</span> 스킨케어 루틴 릴스</li>
+          <li><span class="item-icon">🔴</span> 인플루언서식 '이거 써요' 콘텐츠</li>
+          <li><span class="item-icon">🔴</span> 뷰티 전용 인스타 콘텐츠</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card card-sky" style="font-size:14px;">
+      💡 뷰티 관련 내용은 <strong>유튜브 롱폼</strong>에서 자연스럽게 등장시킨다. 인스타에 별도 제작하지 않음.
+    </div>
+  </div>
+</section>
+
+<!-- ======================== 썸네일 ======================== -->
+<section class="section" id="thumbnail">
+  <div class="section-header">
+    <div class="sec-icon">🎨</div>
+    <h2>썸네일 규칙</h2>
+    <span class="sec-badge" style="background: var(--tint-peach); color: var(--warning);">DESIGN</span>
+  </div>
+
+  <div class="thumb-grid">
+    <div class="thumb-item">
+      <span class="th-icon">🔤</span>
+      <div class="th-title">폰트</div>
+      <div class="th-desc">최대 <strong>2종</strong>만 사용</div>
+    </div>
+    <div class="thumb-item">
+      <span class="th-icon">🎯</span>
+      <div class="th-title">제목</div>
+      <div class="th-desc">영상 내용과 반드시 일치<br>(낚시 금지)</div>
+    </div>
+    <div class="thumb-item">
+      <span class="th-icon">🌞</span>
+      <div class="th-title">밝기/채도</div>
+      <div class="th-desc">썸네일 간 일관성 유지</div>
+    </div>
+    <div class="thumb-item">
+      <span class="th-icon">👤</span>
+      <div class="th-title">구성</div>
+      <div class="th-desc">얼굴 크게 + 텍스트 <strong>6~12자</strong></div>
+    </div>
+    <div class="thumb-item" style="background: linear-gradient(135deg, #f5f0ff, #e8deee);">
+      <span class="th-icon">💜</span>
+      <div class="th-title">보라색</div>
+      <div class="th-desc">BIOFOX 콘텐츠<strong>에만</strong> 사용</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== 광고/PPL ======================== -->
+<section class="section" id="ad">
+  <div class="section-header">
+    <div class="sec-icon">💰</div>
+    <h2>광고/PPL 삽입 규칙</h2>
+    <span class="sec-badge" style="background: #fdebec; color: var(--error);">RULES</span>
+  </div>
+
+  <div class="ad-grid">
+    <div class="ad-item" style="background: linear-gradient(135deg, #fff5f5, #ffe8e8); border-color: rgba(224,62,62,0.15);">
+      <span class="ad-icon">⏱️</span>
+      <div class="ad-text">
+        <div class="ad-title">광고 구간 제한</div>
+        <div class="ad-desc">영상 내 광고 구간: <strong>최대 2분</strong> (절대 상한 3분)</div>
+      </div>
+    </div>
+    <div class="ad-item" style="background: linear-gradient(135deg, #f0f8ff, #d3e5ef); border-color: rgba(35,131,226,0.15);">
+      <span class="ad-icon">🎯</span>
+      <div class="ad-text">
+        <div class="ad-title">스토리 내 녹이기</div>
+        <div class="ad-desc">광고가 영상의 주제가 되면 안 됨 — 스토리 흐름 안에 녹인다</div>
+      </div>
+    </div>
+    <div class="ad-item" style="background: linear-gradient(135deg, #fffaf0, #fdecc8); border-color: rgba(217,115,13,0.15);">
+      <span class="ad-icon">📝</span>
+      <div class="ad-text">
+        <div class="ad-title">상세는 텍스트로</div>
+        <div class="ad-desc">나머지 제품 상세는 캡션/설명란에 텍스트로</div>
+      </div>
+    </div>
+    <div class="ad-item" style="background: linear-gradient(135deg, #f0faf0, #dbeddb); border-color: rgba(15,123,108,0.15);">
+      <span class="ad-icon">💎</span>
+      <div class="ad-text">
+        <div class="ad-title">진정성 있는 제품만</div>
+        <div class="ad-desc">오래 사용한 제품만 보여준다</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== 콘텐츠 비율 ======================== -->
+<section class="section" id="ratio">
+  <div class="section-header">
+    <div class="sec-icon">📊</div>
+    <h2>콘텐츠 비율</h2>
+    <span class="sec-badge" style="background: var(--tint-sky); color: var(--link-blue);">RATIO</span>
+  </div>
+
+  <div class="grid-2">
+    <!-- 6~8월 -->
+    <div class="card" style="padding: 28px;">
+      <div class="ratio-label-row">
+        <span class="ratio-title">📅 6~8월</span>
+        <span class="ratio-badge">빌드업 기간</span>
+      </div>
+      <div class="ratio-bar">
+        <div style="width:35%; background: linear-gradient(135deg, #2383e2, #4a9de8);">
+          <span>35%</span>
+          <span class="bar-label">일상</span>
+        </div>
+        <div style="width:25%; background: linear-gradient(135deg, #0f7b6c, #1a9a88);">
+          <span>25%</span>
+          <span class="bar-label">운동</span>
+        </div>
+        <div style="width:20%; background: linear-gradient(135deg, #dfab01, #f0c030);">
+          <span>20%</span>
+          <span class="bar-label">뷰티</span>
+        </div>
+        <div style="width:15%; background: linear-gradient(135deg, #5B36B2, #7c5cc7);">
+          <span>15%</span>
+          <span class="bar-label">BFX</span>
+        </div>
+        <div style="width:5%; background: linear-gradient(135deg, #e03e3e, #e86060);">
+          <span>5%</span>
+        </div>
+      </div>
+      <div class="ratio-legend">
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#2383e2;"></span> 개인일상</span>
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#0f7b6c;"></span> 운동식단</span>
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#dfab01;"></span> 아름다움철학</span>
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#5B36B2;"></span> BIOFOX</span>
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#e03e3e;"></span> 애프터케어</span>
+      </div>
+    </div>
+
+    <!-- 9월 이후 -->
+    <div class="card" style="padding: 28px;">
+      <div class="ratio-label-row">
+        <span class="ratio-title">🚀 9월 이후</span>
+        <span class="ratio-badge" style="background:#fdebec; color:var(--error);">캠페인 본격화</span>
+      </div>
+      <div class="ratio-bar">
+        <div style="width:50%; background: linear-gradient(135deg, #2383e2, #4a9de8);">
+          <span>50%+</span>
+          <span class="bar-label">일상</span>
+        </div>
+        <div style="width:20%; background: linear-gradient(135deg, #0f7b6c, #1a9a88);">
+          <span>20%</span>
+          <span class="bar-label">운동</span>
+        </div>
+        <div style="width:15%; background: linear-gradient(135deg, #dfab01, #f0c030);">
+          <span>15%</span>
+          <span class="bar-label">뷰티</span>
+        </div>
+        <div style="width:10%; background: linear-gradient(135deg, #5B36B2, #7c5cc7);">
+          <span>10%</span>
+        </div>
+        <div style="width:5%; background: linear-gradient(135deg, #e03e3e, #e86060);">
+          <span>5%</span>
+        </div>
+      </div>
+      <div class="ratio-legend">
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#2383e2;"></span> 개인일상</span>
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#0f7b6c;"></span> 운동식단</span>
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#dfab01;"></span> 아름다움철학</span>
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#5B36B2;"></span> BIOFOX PPL</span>
+        <span class="ratio-legend-item"><span class="ratio-legend-dot" style="background:#e03e3e;"></span> 애프터케어</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== 스토리라인 ======================== -->
+<section class="section" id="storyline">
+  <div class="section-header">
+    <div class="sec-icon">📖</div>
+    <h2>스토리라인 전략</h2>
+    <span class="sec-badge" style="background: var(--tint-lavender); color: var(--primary);">STRATEGY</span>
+  </div>
+
+  <div class="card card-purple" style="text-align:center; font-size:17px;">
+    <span class="card-icon" style="font-size:40px;">🎭</span>
+    <strong>하이브리드: 숨기기 + 리얼</strong><br>
+    <span style="font-size:14px; color:var(--slate);">배우님은 리얼 성향 (못 숨기는 스타일, 솔직한 성격)</span>
+  </div>
+
+  <!-- Timeline -->
+  <h3 class="collapsible open" onclick="toggle(this)" style="font-size:16px; font-weight:700;">단계별 전개 타임라인</h3>
+  <div class="collapsible-content show">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot timeline-dot-blue">🔵</div>
+        <div class="timeline-content" style="border-left: 3px solid var(--link-blue);">
+          <div class="tl-period" style="color: var(--link-blue);">6~8월</div>
+          <div class="tl-title">🤫 숨기기 단계</div>
+          <div class="tl-desc">점점 예뻐지는 모습만 보여줌. 이유는 말하지 않음. 궁금증 유발.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot timeline-dot-yellow">🟡</div>
+        <div class="timeline-content" style="border-left: 3px solid var(--brand-yellow);">
+          <div class="tl-period" style="color: var(--brand-yellow);">8~9월</div>
+          <div class="tl-title">💡 힌트 단계</div>
+          <div class="tl-desc">BIOFOX 본사 방문, 협업 관심 등 자연스럽게 노출</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot timeline-dot-purple">🟣</div>
+        <div class="timeline-content" style="border-left: 3px solid var(--primary);">
+          <div class="tl-period" style="color: var(--primary);">9월~</div>
+          <div class="tl-title">🎉 리얼 공개</div>
+          <div class="tl-desc">풀 공개 + 캠페인 런칭</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Story flow -->
+    <h3 style="font-size:16px; font-weight:700; margin: 24px 0 12px; color: var(--ink);">📜 스토리라인 흐름도</h3>
+    <div class="flow-horizontal">
+      <div class="flow-step" style="border-color: var(--link-blue); background: var(--tint-sky);">
+        <span class="flow-icon">🤫</span>
+        <span class="flow-label">숨기기</span>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step" style="border-color: var(--brand-yellow); background: var(--tint-yellow);">
+        <span class="flow-icon">💡</span>
+        <span class="flow-label">힌트</span>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step" style="border-color: var(--primary); background: var(--tint-lavender);">
+        <span class="flow-icon">🎉</span>
+        <span class="flow-label">공개</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="collapsible" onclick="toggle(this)" style="font-size:16px; font-weight:700;">리얼 스토리 흐름</h3>
+  <div class="collapsible-content">
+    <div class="flow-horizontal" style="margin-top:16px;">
+      <div class="flow-step" style="border-color: var(--slate); min-width:80px; padding:12px 16px;">
+        <span class="flow-icon" style="font-size:24px;">👋</span>
+        <span class="flow-label" style="font-size:12px;">지인 소개</span>
+      </div>
+      <span class="flow-arrow" style="font-size:22px;">→</span>
+      <div class="flow-step" style="border-color: var(--slate); min-width:80px; padding:12px 16px;">
+        <span class="flow-icon" style="font-size:24px;">💉</span>
+        <span class="flow-label" style="font-size:12px;">시술 받음</span>
+      </div>
+      <span class="flow-arrow" style="font-size:22px;">→</span>
+      <div class="flow-step" style="border-color: var(--slate); min-width:80px; padding:12px 16px;">
+        <span class="flow-icon" style="font-size:24px;">✨</span>
+        <span class="flow-label" style="font-size:12px;">눈에 띄게<br>젊어짐</span>
+      </div>
+      <span class="flow-arrow" style="font-size:22px;">→</span>
+      <div class="flow-step" style="border-color: var(--slate); min-width:80px; padding:12px 16px;">
+        <span class="flow-icon" style="font-size:24px;">🏢</span>
+        <span class="flow-label" style="font-size:12px;">본사 방문</span>
+      </div>
+      <span class="flow-arrow" style="font-size:22px;">→</span>
+      <div class="flow-step" style="border-color: var(--primary); min-width:80px; padding:12px 16px; background:var(--tint-lavender);">
+        <span class="flow-icon" style="font-size:24px;">🌟</span>
+        <span class="flow-label" style="font-size:12px;">캠페인<br>모델 합류</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== 촬영 루틴 ======================== -->
+<section class="section" id="filming">
+  <div class="section-header">
+    <div class="sec-icon">📸</div>
+    <h2>촬영 루틴</h2>
+    <span class="sec-badge" style="background: var(--tint-sky); color: var(--link-blue);">PRODUCTION</span>
+  </div>
+
+  <div class="card card-sky" style="text-align:center; font-size:18px; padding:24px;">
+    <span style="font-size:48px; display:block; margin-bottom:8px;">📸</span>
+    <strong>2주에 1회 촬영</strong> · 의상 3벌 준비
+  </div>
+
+  <h3 style="font-size:18px; font-weight:700; margin: 24px 0 14px; color: var(--ink);">📦 1회 촬영 산출물</h3>
+  <div class="output-grid">
+    <div class="output-item">
+      <span class="out-icon">🎬</span>
+      <div class="out-value">1개</div>
+      <div class="out-label">롱폼 인터뷰</div>
+    </div>
+    <div class="output-item">
+      <span class="out-icon">✂️</span>
+      <div class="out-value">5~8개</div>
+      <div class="out-label">숏폼 멘션</div>
+    </div>
+    <div class="output-item">
+      <span class="out-icon">🎞️</span>
+      <div class="out-value">3~5개</div>
+      <div class="out-label">릴스 장면</div>
+    </div>
+    <div class="output-item">
+      <span class="out-icon">📸</span>
+      <div class="out-value">10~15장</div>
+      <div class="out-label">캐러셀 사진</div>
+    </div>
+    <div class="output-item">
+      <span class="out-icon">🖼️</span>
+      <div class="out-value">포함</div>
+      <div class="out-label">썸네일 촬영</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== 숏폼 ======================== -->
+<section class="section" id="shortform">
+  <div class="section-header">
+    <div class="sec-icon">✂️</div>
+    <h2>숏폼 제작 워크플로우</h2>
+    <span class="sec-badge" style="background: var(--tint-peach); color: var(--warning);">WORKFLOW</span>
+  </div>
+
+  <div class="flow-horizontal">
+    <div class="flow-step" style="background: var(--tint-sky);">
+      <span class="flow-icon">🎬</span>
+      <span class="flow-label">1. 촬영 완료</span>
+      <span class="flow-sub">롱폼 촬영</span>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" style="background: var(--tint-lavender);">
+      <span class="flow-icon">🤖</span>
+      <span class="flow-label">2. AI 추출</span>
+      <span class="flow-sub">흥미 구간 식별</span>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" style="background: var(--tint-peach);">
+      <span class="flow-icon">✏️</span>
+      <span class="flow-label">3. 러프컷</span>
+      <span class="flow-sub">AI 제안</span>
+    </div>
+    <span class="flow-arrow">→</span>
+    <div class="flow-step" style="background: var(--tint-mint);">
+      <span class="flow-icon">✅</span>
+      <span class="flow-label">4. 다듬기</span>
+      <span class="flow-sub">담당자 마무리</span>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px;">
+    <div class="card card-purple">
+      <span class="card-icon-sm">🤖</span>
+      <div class="card-title">BIOFOX 자체 개발 AI 도구</div>
+      <p style="font-size:14px; color:var(--slate);">트랜스크립트에서 흥미 구간 자동 추출 → 러프컷 제안</p>
+    </div>
+    <div class="card card-green">
+      <span class="card-icon-sm">⚡</span>
+      <div class="card-title">10배 빠른 제작</div>
+      <p style="font-size:14px; color:var(--slate);">처음부터 하는 것 대비 <strong>10배 빠른</strong> 숏폼 제작</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== 담당자 코칭 ======================== -->
+<section class="section" id="staff">
+  <div class="section-header">
+    <div class="sec-icon">👥</div>
+    <h2>담당자 코칭 포인트</h2>
+    <span class="sec-badge" style="background: var(--tint-rose); color: #c44a8a;">COACHING</span>
+  </div>
+
+  <h3 style="font-size:18px; font-weight:700; margin: 0 0 14px; color: var(--ink);">📈 역량 현황</h3>
+  <div class="skill-row">
+    <span class="skill-icon">✂️</span>
+    <span class="skill-name">편집</span>
+    <div class="skill-bar-wrap">
+      <div class="skill-bar-fill" style="width:85%; background: linear-gradient(90deg, var(--brand-teal), #1a9a88);"></div>
+    </div>
+    <span class="badge badge-ok">강점</span>
+  </div>
+  <div class="skill-row">
+    <span class="skill-icon">🎯</span>
+    <span class="skill-name">기획/연출</span>
+    <div class="skill-bar-wrap">
+      <div class="skill-bar-fill" style="width:35%; background: linear-gradient(90deg, var(--error), #e86060);"></div>
+    </div>
+    <span class="badge badge-ban">약점</span>
+  </div>
+  <p style="font-size:13px; color:var(--slate); margin: 8px 0 24px 0;">⚠️ 기획/연출 약점: 긴장 → 에너지 저하</p>
+
+  <h3 style="font-size:18px; font-weight:700; margin: 0 0 14px; color: var(--ink);">🛠️ 지원 방안</h3>
+  <ul class="checklist">
+    <li>
+      <span class="check-icon">☑️</span>
+      <div><strong>지환님이 1~2회 동행 촬영</strong>하며 코칭 → 이후 담당자 독립 운영</div>
+    </li>
+    <li>
+      <span class="check-icon">☑️</span>
+      <div>매 촬영 전 <strong>질문 리스트 + 토픽 가이드</strong> 제공</div>
+    </li>
+    <li>
+      <span class="check-icon">☑️</span>
+      <div>레퍼런스 채널 지정하여 스터디</div>
+    </li>
+    <li>
+      <span class="check-icon">☑️</span>
+      <div>AI 도구로 숏폼 추출 → 편집 부담 경감</div>
+    </li>
+  </ul>
+</section>
+
+<!-- ======================== 표현 가이드 ======================== -->
+<section class="section" id="expression">
+  <div class="section-header">
+    <div class="sec-icon">💬</div>
+    <h2>표현 가이드</h2>
+    <span class="sec-badge" style="background: var(--tint-yellow); color: #9a7800;">LANGUAGE</span>
+  </div>
+
+  <div class="compare-grid">
+    <div class="compare-card compare-good">
+      <div class="compare-header">
+        <span class="c-icon">✅</span> 사용 가능 표현
+      </div>
+      <ul>
+        <li><span class="item-icon">🟢</span> 자연스럽게 좋아 보이는</li>
+        <li><span class="item-icon">🟢</span> 편안하게 정돈된</li>
+        <li><span class="item-icon">🟢</span> 내 얼굴을 지키는 관리</li>
+      </ul>
+    </div>
+    <div class="compare-card compare-bad">
+      <div class="compare-header">
+        <span class="c-icon">❌</span> 금지 표현
+      </div>
+      <ul>
+        <li><span class="item-icon">🔴</span> 젊어졌다</li>
+        <li><span class="item-icon">🔴</span> 10년 어려졌다</li>
+        <li><span class="item-icon">🔴</span> 기미개선 / 홍조개선</li>
+        <li><span class="item-icon">🔴</span> 재생 / 리프팅</li>
+        <li><span class="item-icon">🔴</span> 치료 / 확실한 효과</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+<p class="stamp">마지막 업데이트: 2025년 5월 · 미팅 결과 반영본</p>
+
+</main>
+</div>
+
+<button class="mobile-menu no-print" onclick="document.querySelector('.sidebar').style.display = document.querySelector('.sidebar').style.display === 'block' ? 'none' : 'block'">☰</button>
+
+<script>
+function toggle(el) {
+  el.classList.toggle('open');
+  const content = el.nextElementSibling;
+  content.classList.toggle('show');
+}
+function toggleAll(open) {
+  document.querySelectorAll('.collapsible').forEach(el => {
+    if (open) { el.classList.add('open'); el.nextElementSibling.classList.add('show'); }
+    else { el.classList.remove('open'); el.nextElementSibling.classList.remove('show'); }
+  });
+}
+// Sidebar active state
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.sidebar nav a').forEach(a => a.classList.remove('active'));
+      const a = document.querySelector(`.sidebar nav a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.section').forEach(s => observer.observe(s));
+
+// Smooth scroll
+document.querySelectorAll('.sidebar nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const id = a.getAttribute('href').slice(1);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
